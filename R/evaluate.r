@@ -1,3 +1,12 @@
+# initialize HCC List
+names(cmshcc_map) <- c("icd9", "hcc")
+#Generate list of HCC mapping
+hccs <- sort(unique(cmshcc_map$hcc))
+cmshcc_list <- list()
+for(i in 1:length(hccs)) {
+	label <- paste0("HCC", hccs[i])
+	cmshcc_list[[label]] <- subset(cmshcc_map, hcc == hccs[i])$icd9
+}
 # --------------------------------------------------------------
 # CMS HCC Model V22 for Continuing Community Enrollees
 #Assumes that these data frames have been imported into the R environment
@@ -139,17 +148,4 @@ generateTestDIAG <- function(size = 100, seed = 2, max_dx = 10, cmshcc_map) {
 	HICNO <-rep(x = 1:size, times = num_dx)
 	DIAG <- data.frame(HICNO = HICNO, DIAGS = dxs, stringsAsFactors = FALSE)
 	return(DIAG)
-}
-#Load icd9HCC mapping
-loadicd9HCC <- function() {
-	cmshcc_map <- read.csv(file.choose(), header=FALSE, sep="", stringsAsFactors=FALSE)
-	names(cmshcc_map) <- c("icd9", "hcc")
-	#Generate list of HCC mapping
-	hccs <- sort(unique(cmshcc_map$hcc))
-	cmshcc_list <- list()
-	for(i in 1:length(hccs)) {
-		label <- paste0("HCC", hccs[i])
-		cmshcc_list[[label]] <- subset(cmshcc_map, hcc == hccs[i])$icd9
-	}
-	cmshcc_list
 }
