@@ -1,12 +1,12 @@
-icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list) {
+icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list, factor_list = factors) {
   PERSON$AGE <- as.numeric(round(difftime(Sys.Date(), as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
   PERSON$ORIGDS <- (PERSON$AGE >= 65) & (PERSON$OREC %in% c(1,3))
   breaks <- c(0, 35, 45, 55, 60, 65, 70, 75, 80, 85, 90, 95, 120)
   PERSON$AGE_BAND <- cut(x = PERSON$AGE, breaks = breaks, include.lowest = TRUE, right = FALSE)
   
-  female_age_factors <- c(0.210, 0.217, 0.276, 0.343, 0.415, 0.279, 0.337, 0.426, 0.525, 0.651, 0.786, 0.822)
-  male_age_factors <- c(0.117, 0.133, 0.193, 0.272, 0.337, 0.283, 0.346, 0.436, 0.534, 0.656, 0.824, .993)
+  female_age_factors <- factor_list$female_age_factors
+  male_age_factors <- factor_list$male_age_factors
   PERSON$AGEGENDER_SCORE <- (PERSON$SEX == 1) * male_age_factors[PERSON$AGE_BAND] + (PERSON$SEX == 2) * female_age_factors[PERSON$AGE_BAND]
   
   PERSON$MCAID_FEMALE_AGED <- (PERSON$MCAID == 1) & (PERSON$SEX == 2) & (PERSON$DISABL == 0)
@@ -16,7 +16,7 @@ icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$ORIGDS_FEMALE <- (PERSON$ORIGDS == 1) & (PERSON$SEX == 2)
   PERSON$ORIGDS_MALE <- (PERSON$ORIGDS == 1) & (PERSON$SEX == 1)
   
-  demointeraction_factors <- c(0.202, 0.103, 0.232, 0.099, 0.228, 0.160)
+  demointeraction_factors <- factor_list$demointeraction_factors
   PERSON$DEMOINTERACTION_SCORE <- as.matrix(PERSON[,c("MCAID_FEMALE_AGED", "MCAID_FEMALE_DISABL", "MCAID_MALE_AGED", "MCAID_MALE_DISABL", "ORIGDS_FEMALE", "ORIGDS_MALE")]) %*% demointeraction_factors
   
   #Evaluate using icd9 package by Jack Wasey
@@ -55,7 +55,7 @@ icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$HCC177 <- PERSON$HCC177 & (!PERSON$HCC161)
   
   #Generate Disease Scores
-  disease_factors <- c(.458, .766, .465, 2.175, .919, .706, .187, .371, .371, .371, .371, .127, .745, 1.006, .413, .262, .310, .362, .302, .585, .361, 1.129, .945, .373, .373, .517, .360, 1.147, 1.061, .491, .464, .321, .516, .643, .278, .580, 1.767, 1.117, .531, .346, .294, .274, .170, .289, .359, .265, .534, .131, .594, .302, .385, .340, .734, .206, .236, 1.348, .297, .116, 1.165, .476, 1.246, .580, .171, .467, .435, .793, .311, 1.084, .659, .793)
+  disease_factors <- factor_list$disease_factors
   PERSON$DISEASE_SCORE <- as.matrix(PERSON[, names(cmshcc_list)]) %*% disease_factors
   
   #Condition Category Groupings
@@ -75,7 +75,7 @@ icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$RF_CHF_DM <- PERSON$RF & PERSON$CHF & PERSON$DM & (!PERSON$DM_CHF) & (!PERSON$RF_CHF)
   
   interaction_terms <- c("DM_CHF", "DM_CVD", "CHF_COPD", "COPD_CVD_CAD", "RF_CHF", "RF_CHF_DM")
-  interaction_factors <- c(.150, .150, .278, .233, .262, .600)
+  interaction_factors <- factor_list$interaction_factors
   PERSON$DISEASE_INTERACTION <- as.matrix(PERSON[, interaction_terms]) %*% interaction_factors
   
   #Disability x Disease Interaction Terms
@@ -86,7 +86,7 @@ icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$DISABL_HCC107 <- PERSON$DISABL & PERSON$HCC107
   
   disabl_int_terms <- c("DISABL_HCC5", "DISABL_HCC44", "DISABL_HCC51", "DISABL_HCC52", "DISABL_HCC107")
-  disabl_int_factors <- c(.597, 1.340, .383, .105, 2.556)
+  disabl_int_factors <- factor_list$disabl_int_factors
   PERSON$DISABL_INTERACTION <- as.matrix(PERSON[, disabl_int_terms]) %*% disabl_int_factors
   
   #Total Risk Adjustment Scores
