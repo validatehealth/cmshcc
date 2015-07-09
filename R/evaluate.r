@@ -17,6 +17,7 @@
 # Calculated fields
 # Assume DOB is in yyyy-mm-dd format, calculate age from today
 #Evaluate CMS-HCC risk adjustment score
+#start of code
 icd9RiskAdjCMSHCC <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$AGE <- as.numeric(round(difftime(Sys.Date(), as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
@@ -132,7 +133,6 @@ generateTestPERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", 
   return(PERSON)
 }
 generateTestDIAG <- function(size = 100, seed = 2, max_dx = 10, cmshcc_map) {
-<<<<<<< HEAD
   set.seed(seed)
   num_dx <- sample(x = 1:max_dx, size, replace = TRUE)
   tot_dx <- sum(num_dx)
@@ -153,7 +153,6 @@ loadicd9HCC <- function() {
     cmshcc_list[[label]] <- subset(cmshcc_map, hcc == hccs[i])$icd9
   }
   cmshcc_list
-=======
 	set.seed(seed)
 	num_dx <- sample(x = 1:max_dx, size, replace = TRUE)
 	tot_dx <- sum(num_dx)
@@ -174,5 +173,4 @@ loadicd9HCC <- function() {
 		cmshcc_list[[label]] <- subset(cmshcc_map, hcc == hccs[i])$icd9
 	}
 	cmshcc_list
->>>>>>> 0904b38ae423317fe8abc7d12066e902e36f8067
 }
