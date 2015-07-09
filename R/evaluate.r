@@ -17,7 +17,6 @@
 # Calculated fields
 # Assume DOB is in yyyy-mm-dd format, calculate age from today
 #Evaluate CMS-HCC risk adjustment score
-#start of code
 icd9RiskAdjCMSHCC <- function(DIAG, PERSON, cmshcc_list) {
   PERSON$AGE <- as.numeric(round(difftime(Sys.Date(), as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
