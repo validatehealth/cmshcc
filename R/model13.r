@@ -1,5 +1,5 @@
-icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list, factor_list = factors) {
-  PERSON$AGE <- as.numeric(round(difftime(Sys.Date(), as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
+icd9RiskAdjCMSHCC13 <- function(DIAG, PERSON, cmshcc_list, date = Sys.Date(), factor_list = factors) {
+  PERSON$AGE <- as.numeric(round(difftime(date, as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
   PERSON$ORIGDS <- (PERSON$AGE >= 65) & (PERSON$OREC %in% c(1,3))
   breaks <- c(0, 35, 45, 55, 60, 65, 70, 75, 80, 85, 90, 95, 120)
