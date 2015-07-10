@@ -1,3 +1,4 @@
+#Generates a random date
 randomDate <- function(size = 100, start_time = "1930/01/01", end_time = "2010/12/31") {
   start_time <- as.POSIXct(as.Date(start_time))
   end_time <- as.POSIXct(as.Date(end_time))
@@ -6,6 +7,8 @@ randomDate <- function(size = 100, start_time = "1930/01/01", end_time = "2010/1
   random_time <- start_time + end_value
   return(random_time)
 }
+
+#Generates a sample dataframe of people of specified size
 generateTestPERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", end_time = "2010/12/31") {
   set.seed(seed)
   HICNO <- 1:size
@@ -17,6 +20,8 @@ generateTestPERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", 
   PERSON <- data.frame(HICNO = HICNO, SEX = SEX, DOB = DOB, MCAID = MCAID, NMCAID = NMCAID, OREC = OREC, stringsAsFactors = FALSE)
   return(PERSON)
 }
+
+#Generates a sample dataframe of diagnoses of specified size
 generateTestDIAG <- function(size = 100, seed = 2, max_dx = 10, cmshcc_map) {
   set.seed(seed)
   num_dx <- sample(x = 1:max_dx, size, replace = TRUE)
@@ -26,6 +31,7 @@ generateTestDIAG <- function(size = 100, seed = 2, max_dx = 10, cmshcc_map) {
   DIAG <- data.frame(HICNO = HICNO, DIAGS = dxs, stringsAsFactors = FALSE)
   return(DIAG)
 }
+
 #Load icd9HCC mapping
 loadicd9HCC <- function() {
 	cmshcc_map <- read.csv(file.choose(), header=FALSE, sep="", stringsAsFactors=FALSE)
@@ -38,4 +44,18 @@ loadicd9HCC <- function() {
 		cmshcc_list[[label]] <- subset(cmshcc_map, hcc == hccs[i])$icd9
 	}
 	cmshcc_list
+}
+
+#New Enrollee Model
+age_gender_only <- function(PERSON, date = Sys.Date(), factor_list = factors){
+  PERSON$AGE <- as.numeric(round(difftime(date, as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
+  PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
+  PERSON$ORIGDS <- (PERSON$AGE >= 65) & (PERSON$OREC %in% c(1,3))
+  breaks <- c(0, 35, 45, 55, 60, 65, 70, 75, 80, 85, 90, 95, 120)
+  PERSON$AGE_BAND <- cut(x = PERSON$AGE, breaks = breaks, include.lowest = TRUE, right = FALSE)
+  
+  female_age_factors <- factor_list$female_age_factors
+  male_age_factors <- factor_list$male_age_factors
+  PERSON$AGEGENDER_SCORE <- (PERSON$SEX == 1) * male_age_factors[PERSON$AGE_BAND] + (PERSON$SEX == 2) * female_age_factors[PERSON$AGE_BAND]
+  return(PERSON$AGEGENDER_SCORE)
 }
