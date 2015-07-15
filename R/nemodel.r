@@ -1,5 +1,5 @@
 icd9RiskAdjCMSHCCne <- function(PERSON, date = Sys.Date(), factor_list = factors) {
-  PERSON$AGE <- as.numeric(round(difftime(date, as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
+  PERSON$AGE <- as.numeric(round(difftime(Sys.Date(), as.Date(PERSON$DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
   PERSON$ORIGDS <- (PERSON$AGE >= 65) & (PERSON$OREC %in% c(1,3))
   breaks <- c(0, 35, 45, 55, 60, 65, 66, 67, 68, 69, 70, 75, 80, 85, 90, 95, 120)
   PERSON$AGE_BAND <- cut(x = PERSON$AGE, breaks = breaks, include.lowest = TRUE, right = FALSE, labels = FALSE)

@@ -21,6 +21,16 @@ generateTestPERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", 
   return(PERSON)
 }
 
+constructSigma <- function(age_var = 200, gender_var = .01, mcaid_var = .01, origds_var = .01, age_gender = 0, age_mcaid = 0, age_origds = 0, gender_mcaid = 0, gender_origds = 0, mcaid_origds = 0) {
+  sigma <- as.matrix(data.frame(c(age_var, age_gender, age_mcaid, age_origds), c(age_gender, gender_var, gender_mcaid, gender_origds), c(age_mcaid, gender_mcaid, mcaid_var, mcaid_origds), c(age_origds, gender_origds, mcaid_origds, origds_var)))
+}
+
+generateTestGROUP <- function(size = 100, mu, sigma) {
+  test <- round(mvrnorm(n = size, mu = mu, Sigma = sigma))
+  colnames(test) <- c("AGE", "GENDER", "MCAID", "ORIGDS")
+  return (test)
+}
+
 #Generates a sample dataframe of diagnoses of specified size
 generateTestDIAG <- function(size = 100, seed = 2, max_dx = 10, cmshcc_map) {
   set.seed(seed)
