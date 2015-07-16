@@ -8,6 +8,12 @@ randomDate <- function(size = 100, start_time = "1930/01/01", end_time = "2010/1
   return(random_time)
 }
 
+age_band <- function(DOB, date, breaks) {
+  age <- as.numeric(round(difftime(date, as.Date(DOB, "%Y-%m-%d", tz = "UTC"), units = "weeks")/52.25))
+  age_band <- cut(x = age, breaks = breaks, include.lowest = TRUE, right = FALSE)
+  age_band
+}
+
 #Generates a sample dataframe of people of specified size
 generateTestPERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", end_time = "2010/12/31") {
   set.seed(seed)
