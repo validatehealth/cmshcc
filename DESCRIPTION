@@ -1,15 +1,20 @@
 Package: cmshcc
-Title: Computes Center for Medicare and Medicaid Services (CMS) Hierarchical Condition Category (HCC) risk adjuster
+Title: Computes Center for Medicare and Medicaid Services (CMS) Hierarchical
+    Condition Category (HCC) risk adjuster
 Version: 0.1
 Authors@R: person("Andrew", "Webster", email = "andrew.webster@validatehealth.com",
                   role = c("aut", "cre"))
-Description: The United States Center for Medicare and Medicaid Services (CMS) administers Medicare Advantage (MA) health insurance plans.  
-	MA plan capitation rate depends on risk adjustment factor of the covered population.  The risk adjustment factor is calculated by using a
-	hierarchical condition category (HCC) risk adjuster.  This algorithm takes a combination of demographic and disease state variables to assign
-	the member a level of chronic illness burden.
-Depends: R (>= 3.1.0)
+Description: The United States Center for Medicare and Medicaid Services (CMS)
+    administers Medicare Advantage (MA) health insurance plans. MA plan capitation
+    rate depends on risk adjustment factor of the covered population. The risk
+    adjustment factor is calculated by using a hierarchical condition category (HCC)
+    risk adjuster. This algorithm takes a combination of demographic and disease
+    state variables to assign the member a level of chronic illness burden.
+Depends:
+    R (>= 3.1.0)
 License: MIT
 LazyData: true
 Imports:
-	icd9,
-	rbenchmark
+    icd9,
+    rbenchmark
+RoxygenNote: 5.0.1
