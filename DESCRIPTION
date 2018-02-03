@@ -1,7 +1,7 @@
 Package: cmshcc
 Title: Computes Center for Medicare and Medicaid Services (CMS) Hierarchical
     Condition Category (HCC) risk adjuster
-Version: 0.1
+Version: 0.2
 Authors@R: person("Andrew", "Webster", email = "andrew.webster@validatehealth.com",
                   role = c("aut", "cre"))
 Description: The United States Center for Medicare and Medicaid Services (CMS)
