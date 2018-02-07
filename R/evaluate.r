@@ -86,8 +86,7 @@ generate_DIAG <- function(cmshcc_map, size = 100, seed = 2, max_dx = 10) {
 #' @import stringr
 #' @importFrom stringr str_pad
 #' @export
-load_cmshcc_map <- function(file_name = "data/2017_Midyear_Final ICD-10-CM Mappings_standard.RData") {
-  #cmshcc_map <- read.csv(file_name, header=TRUE, sep=",", stringsAsFactors=FALSE)
+load_cmshcc_map <- function() {
   cmshcc_map <- mappings
   cmshcc_map <- cmshcc_map[c("DX", "CMSHCC")]
   cmshcc_map <- na.omit(cmshcc_map)
@@ -149,7 +148,6 @@ person_age_band <- function(ages,  genders, breaks = c(0, 34, 44, 54, 59, 64, 69
 #' @param model_type
 #' @export
 evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
-  factors_v22_2017 <- read.csv('data/factors_v22_2017.csv', header = TRUE, sep = ",", stringsAsFactors = FALSE)
   factors_v22_2017$description <- NULL
   
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
