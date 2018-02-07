@@ -83,6 +83,8 @@ generate_DIAG <- function(cmshcc_map, size = 100, seed = 2, max_dx = 10) {
 #' load_hcc_map
 #' @param string file name for the ICD -> HCC mapping file
 #' @return Data Frame The data frame of the mapping file
+#' @import stringr
+#' @importFrom stringr str_pad
 #' @export
 load_cmshcc_map <- function(file_name = "data/2017_Midyear_Final ICD-10-CM Mappings_standard.RData") {
   #cmshcc_map <- read.csv(file_name, header=TRUE, sep=",", stringsAsFactors=FALSE)
@@ -103,6 +105,10 @@ load_cmshcc_map <- function(file_name = "data/2017_Midyear_Final ICD-10-CM Mappi
 #' @param 
 #' @return 
 #' @export
+#' @import dplyr
+#' @importFrom dplyr distinct
+#' @import reshape2
+#' @importFrom reshape2 dcast
 get_hcc_grid <- function(PERSON, DIAG, cmshcc_map) {
   dummy_HCC_DIAG <- data.frame(HICNO="DUMMY", DX=cmshcc_map$DX, stringsAsFactors=FALSE)
   dummy_PERSON_DIAG <- data.frame(HICNO=PERSON$HICNO, DX="DUMMY", stringsAsFactors=FALSE)
