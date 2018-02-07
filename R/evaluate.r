@@ -112,7 +112,7 @@ get_hcc_grid <- function(PERSON, DIAG, cmshcc_map) {
   dummy_HCC_DIAG <- data.frame(HICNO="DUMMY", DX=cmshcc_map$DX, stringsAsFactors=FALSE)
   dummy_PERSON_DIAG <- data.frame(HICNO=PERSON$HICNO, DX="DUMMY", stringsAsFactors=FALSE)
   DIAG <- rbind(DIAG, dummy_HCC_DIAG, dummy_PERSON_DIAG) # ensures that all HCC columns appear in the grid
-  merge_df <- merge(DIAG, cmshcc_map, on="DX")
+  merge_df <- merge(DIAG, cmshcc_map, by = "DX")
   merge_df$DX <- NULL
   merge_df <- distinct(merge_df)
   merge_df$indicator <- 1
