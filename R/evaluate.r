@@ -148,8 +148,11 @@ person_age_band <- function(ages,  genders, breaks = c(0, 34, 44, 54, 59, 64, 69
 #' @param model_type
 #' @export
 evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
+  
   factors_v22_2017$description <- NULL
   
+  PERSON$AGE <- person_age(PERSON$DOB)
+  PERSON$AGE_BAND <- person_age_band(PERSON$AGE, PERSON$SEX)
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
   PERSON$ORIGDS <- (!PERSON$DISABL) & (PERSON$OREC == 1)
 
@@ -288,6 +291,8 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   PERSON$demographic_condition_interaction_score <- as.matrix(PERSON[, demographic_condition_interaction_factors_names]) %*% as.matrix(demographic_condition_interaction_factors)
   
   # Add final score
-  PERSON[[model_type]] <- PERSON$demographic_score + PERSON$demographic_interaction_score + PERSON$condition_score + PERSON$condition_interaction_score + PERSON$demographic_condition_interaction_score
-  return(PERSON[[model_type]])
+  results <- PERSON$demographic_score + PERSON$demographic_interaction_score + PERSON$condition_score + PERSON$condition_interaction_score + PERSON$demographic_condition_interaction_score
+  results <- as.data.frame(results)
+  names(results) <- c(model_type)
+  return(results)
 }
