@@ -31,6 +31,7 @@ library(dplyr)
 #' @param start_time string is the YYYY/MM/DD start time to start the sampled random dates (default is 1930/01/01)
 #' @param end_time string is the YYYY/MM/DD end time to cut off the sampled random dates (default is today's date)
 #' @return vector of random dates length size
+#' @export
 random_date <- function(size = 100, seed = 2, start_time = "1930/01/01", end_time = Sys.Date()) {
   start_time <- as.POSIXct(as.Date(start_time))
   end_time <- as.POSIXct(as.Date(end_time))
@@ -48,6 +49,7 @@ random_date <- function(size = 100, seed = 2, start_time = "1930/01/01", end_tim
 #' @param start_time string is the YYYY/MM/DD start time to start the sampled random dates (default is 1930/01/01)
 #' @param end_time string is the YYYY/MM/DD end time to cut off the sampled random dates (default is today's date)
 #' @return Data Frame for the PERSON demographics information required for risk adjustment
+#' @export
 generate_PERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", end_time = Sys.Date()) {
   set.seed(seed)
   HICNO <- 1:size
@@ -66,6 +68,7 @@ generate_PERSON <- function(size = 100, seed = 2, start_time = "1930/01/01", end
 #' @param seed integer is the random seed starting value for reproducability (default 2)
 #' @param max_dx integer is the maximum number of diagnoses that a beneficiary can have (default 10)
 #' @return data frame DIAG is the list of HICNO and ICD diagnoses
+#' @export
 generate_DIAG <- function(cmshcc_map, size = 100, seed = 2, max_dx = 10) {
   set.seed(seed)
   num_dx <- sample(x = 0:max_dx, size, replace = TRUE)
@@ -79,7 +82,8 @@ generate_DIAG <- function(cmshcc_map, size = 100, seed = 2, max_dx = 10) {
 
 #' load_hcc_map
 #' @param string file name for the ICD -> HCC mapping file
-#' @return Data Frame The data frame of the 
+#' @return Data Frame The data frame of the mapping file
+#' @export
 load_cmshcc_map <- function(file_name = "data/2017MidyearFinalICD-10-CMMappings/2017_Midyear_Final ICD-10-CM Mappings_standard.csv") {
   cmshcc_map <- read.csv(file_name, header=TRUE, sep=",", stringsAsFactors=FALSE)
   cmshcc_map <- cmshcc_map[c("DX", "CMSHCC")]
@@ -92,15 +96,12 @@ load_cmshcc_map <- function(file_name = "data/2017MidyearFinalICD-10-CMMappings/
   return(cmshcc_map)
 }
 
-cmshcc_map <- load_cmshcc_map()
-PERSON <- generate_PERSON()
-DIAG <- generate_DIAG(cmshcc_map)
-
 #' get_hcc_grid
 #' @param 
 #' @param
 #' @param 
 #' @return 
+#' @export
 get_hcc_grid <- function(PERSON, DIAG, cmshcc_map) {
   dummy_HCC_DIAG <- data.frame(HICNO="DUMMY", DX=cmshcc_map$DX, stringsAsFactors=FALSE)
   dummy_PERSON_DIAG <- data.frame(HICNO=PERSON$HICNO, DX="DUMMY", stringsAsFactors=FALSE)
@@ -115,35 +116,33 @@ get_hcc_grid <- function(PERSON, DIAG, cmshcc_map) {
   hcc_grid
 }
 
-hcc_grid <- get_hcc_grid(PERSON, DIAG, cmshcc_map)
-
 #' person_age
 #' @param DOB date is the date of birth for the person
 #' @param ASOF date is the date as of the risk scores are evaluated
 #' @return numeric age
+#' @export
 person_age <- function(DOB, ASOF=Sys.Date()) {
   as.numeric(round(difftime(ASOF, DOB, units = "weeks")/52.25))
 }
 
-PERSON$AGE <- person_age(PERSON$DOB)
-
-breaks_def <- c(0, 34, 44, 54, 59, 64, 69, 74, 79, 84, 89, 94, 120)
-break_labels_def <- c("0_34", "35_44", "45_54", "55_59", "60_64", "65_69", "70_74", "75_79", "80_84", "85_89", "90_94", "95_GT")
-
 #' person_age_band
 #' @param breaks vector of integers representing the lower endpoints for the age bands
 #' @param break_labels vector of strings representing the labels for each age band
-person_age_band <- function(ages, breaks = breaks_def, break_labels = break_labels_def) {
-  cut(x = ages, breaks = breaks, labels=break_labels, include.lowest = FALSE, right = TRUE)
+#' @export
+person_age_band <- function(ages,  genders, breaks = c(0, 34, 44, 54, 59, 64, 69, 74, 79, 84, 89, 94, 120), break_labels = c("0_34", "35_44", "45_54", "55_59", "60_64", "65_69", "70_74", "75_79", "80_84", "85_89", "90_94", "95_GT")) {
+  age_bands = cut(x = ages, breaks = breaks, labels=break_labels, include.lowest = FALSE, right = TRUE)
+  age_bands = as.character(age_bands)
+  age_bands = paste(genders, age_bands, sep="")
+  return(age_bands)
 }
 
-PERSON$AGE_BAND <- as.character(person_age_band(PERSON$AGE))
-PERSON$AGE_BAND <- paste(PERSON$SEX, PERSON$AGE_BAND, sep="")
-
-factors_v22_2017 <- read.csv('data/factors_v22_2017.csv', header = TRUE, sep = ",", stringsAsFactors = FALSE)
-factors_v22_2017$description <- NULL
-
+#' evaluate_v22_2017
+#' @param PERSON 
+#' @param DIAG
+#' @param model_type
 evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
+  factors_v22_2017 <- read.csv('data/factors_v22_2017.csv', header = TRUE, sep = ",", stringsAsFactors = FALSE)
+  factors_v22_2017$description <- NULL
   
   PERSON$DISABL <- (PERSON$AGE < 65) & (PERSON$OREC != 0)
   PERSON$ORIGDS <- (!PERSON$DISABL) & (PERSON$OREC == 1)
@@ -285,15 +284,3 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   PERSON[[model_type]] <- PERSON$demographic_score + PERSON$demographic_interaction_score + PERSON$condition_score + PERSON$condition_interaction_score + PERSON$demographic_condition_interaction_score
   return(PERSON[[model_type]])
 }
-
-Community_NonDual_Aged = evaluate_v22_2017(PERSON, DIAG, "Community_NonDual_Aged")
-Community_NonDual_Disabled = evaluate_v22_2017(PERSON, DIAG, "Community_NonDual_Disabled")
-Community_FBDual_Aged = evaluate_v22_2017(PERSON, DIAG, "Community_FBDual_Aged")
-Community_FBDual_Disabled = evaluate_v22_2017(PERSON, DIAG, "Community_FBDual_Disabled")
-Community_PBDual_Aged = evaluate_v22_2017(PERSON, DIAG, "Community_PBDual_Aged")
-Community_PBDual_Disabled = evaluate_v22_2017(PERSON, DIAG, "Community_PBDual_Disabled")
-Institutional = evaluate_v22_2017(PERSON, DIAG, "Institutional")
-
-results <- cbind(Community_NonDual_Aged, Community_NonDual_Disabled, Community_FBDual_Aged, Community_FBDual_Disabled, Community_PBDual_Aged, Community_PBDual_Disabled, Institutional)
-results <- as.data.frame(results)
-names(results) <- c("Community_NonDual_Aged", "Community_NonDual_Disabled", "Community_FBDual_Aged", "Community_FBDual_Disabled", "Community_PBDual_Aged", "Community_PBDual_Disabled", "Institutional")
