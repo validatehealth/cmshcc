@@ -5,7 +5,7 @@
 \title{load_hcc_map}
 \usage{
 
-  load_cmshcc_map(file_name = "data/2017MidyearFinalICD-10-CMMappings/2017_Midyear_Final ICD-10-CM Mappings_standard.csv")
+  load_cmshcc_map(file_name = "data/2017_Midyear_Final ICD-10-CM Mappings_standard.RData")
 }
 \arguments{
 \item{string}{file name for the ICD -> HCC mapping file}
