@@ -84,8 +84,10 @@ generate_DIAG <- function(cmshcc_map, size = 100, seed = 2, max_dx = 10) {
 #' @param string file name for the ICD -> HCC mapping file
 #' @return Data Frame The data frame of the mapping file
 #' @export
-load_cmshcc_map <- function(file_name = "data/2017_Midyear_Final ICD-10-CM Mappings_standard.csv") {
-  cmshcc_map <- read.csv(file_name, header=TRUE, sep=",", stringsAsFactors=FALSE)
+load_cmshcc_map <- function(file_name = "data/2017_Midyear_Final ICD-10-CM Mappings_standard.RData") {
+  #cmshcc_map <- read.csv(file_name, header=TRUE, sep=",", stringsAsFactors=FALSE)
+  load(file_name)
+  cmshcc_map <- mappings
   cmshcc_map <- cmshcc_map[c("DX", "CMSHCC")]
   cmshcc_map <- na.omit(cmshcc_map)
   cmshcc_map$CMSHCC <- as.character(cmshcc_map$CMSHCC)
