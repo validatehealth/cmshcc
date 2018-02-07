@@ -147,6 +147,7 @@ person_age_band <- function(ages,  genders, breaks = c(0, 34, 44, 54, 59, 64, 69
 #' @param PERSON 
 #' @param DIAG
 #' @param model_type
+#' @export
 evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   factors_v22_2017 <- read.csv('data/factors_v22_2017.csv', header = TRUE, sep = ",", stringsAsFactors = FALSE)
   factors_v22_2017$description <- NULL
@@ -177,6 +178,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   PERSON$demographic_interaction_score <- as.matrix(PERSON[, demographic_interaction_factors_names]) %*% as.matrix(demographic_interaction_factors)
   
   # Condition factors
+  hcc_grid <- get_hcc_grid(PERSON, DIAG, cmshcc_map)
   PERSON <- merge(PERSON, hcc_grid, by = "HICNO")
     
   # Apply Hierarchies
