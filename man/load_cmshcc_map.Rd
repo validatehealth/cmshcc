@@ -11,7 +11,7 @@
 \item{string}{file name for the ICD -> HCC mapping file}
 }
 \value{
-Data Frame The data frame of the
+Data Frame The data frame of the mapping file
 }
 \description{
 load_hcc_map

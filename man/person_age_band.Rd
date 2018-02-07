@@ -4,7 +4,9 @@
 \alias{person_age_band}
 \title{person_age_band}
 \usage{
-person_age_band(ages, breaks = breaks_def, break_labels = break_labels_def)
+person_age_band(ages, genders, breaks = c(0, 34, 44, 54, 59, 64, 69, 74, 79,
+  84, 89, 94, 120), break_labels = c("0_34", "35_44", "45_54", "55_59",
+  "60_64", "65_69", "70_74", "75_79", "80_84", "85_89", "90_94", "95_GT"))
 }
 \arguments{
 \item{breaks}{vector of integers representing the lower endpoints for the age bands}
