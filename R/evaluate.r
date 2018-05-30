@@ -292,7 +292,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   
   # Add final score
   results <- PERSON$demographic_score + PERSON$demographic_interaction_score + PERSON$condition_score + PERSON$condition_interaction_score + PERSON$demographic_condition_interaction_score
-  results <- as.data.frame(results)
-  names(results) <- c(model_type)
+  results <- data.frame(PERSON$HICNO,results)
+  names(results) <- c('HICNO',model_type)
   return(results)
 }
