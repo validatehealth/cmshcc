@@ -222,7 +222,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   # Generate Condition Scores
   condition_factors <- subset(factors_v22_2017, factor_type == "condition_category")
   condition_factors$factor_type <- NULL
-  condition_factors_names <- condition_factors$factor
+  condition_factors_names <- as.character(condition_factors$factor)
   condition_factors <- condition_factors[model_type]
   names(condition_factors) <- c("condition_score")
   
@@ -266,7 +266,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   # Generate Condition Interaction Scores
   condition_interaction_factors <- subset(factors_v22_2017, factor_type == "condition_interaction")
   condition_interaction_factors$factor_type <- NULL
-  condition_interaction_factors_names <- condition_interaction_factors$factor
+  condition_interaction_factors_names <- as.character(condition_interaction_factors$factor)
   condition_interaction_factors <- condition_interaction_factors[model_type]
   names(condition_interaction_factors) <- c("condition_interaction_score")
   
@@ -284,7 +284,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   # Generate Demographic Condition Interaction Scores
   demographic_condition_interaction_factors <- subset(factors_v22_2017, factor_type == "demographic_condition_interaction")
   demographic_condition_interaction_factors$factor_type <- NULL
-  demographic_condition_interaction_factors_names <- demographic_condition_interaction_factors$factor
+  demographic_condition_interaction_factors_names <- as.character(demographic_condition_interaction_factors$factor)
   demographic_condition_interaction_factors <- demographic_condition_interaction_factors[model_type]
   names(demographic_condition_interaction_factors) <- c("demographic_condition_interaction_score")
   
