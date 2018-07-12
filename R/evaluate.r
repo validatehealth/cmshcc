@@ -172,7 +172,7 @@ evaluate_v22_2017 <- function(PERSON, DIAG, model_type) {
   
   demographic_interaction_factors <- subset(factors_v22_2017, factor_type == "demographic_interaction")
   demographic_factors$factor_type <- NULL
-  demographic_interaction_factors_names <- demographic_interaction_factors$factor
+  demographic_interaction_factors_names <- as.character(demographic_interaction_factors$factor)
   demographic_interaction_factors <- demographic_interaction_factors[model_type]
   names(demographic_interaction_factors) <- c("demographic_interaction_score")
   
